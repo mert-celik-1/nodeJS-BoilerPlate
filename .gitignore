@@ -1,0 +1,12 @@
+# Node.js ignore
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Temporary files
+*.log
+*.tmp
+
+# Compiled output
+*.exe
+*.dll
