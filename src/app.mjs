@@ -1,24 +1,14 @@
-import express from "express"
-import mongoose from "mongoose"
-import dotenv from 'dotenv'
+import express from 'express';
+import connectToDatabase from './utils/mongo.mjs';
 import productRoutes from '../routes/productRoutes.mjs';
+import loadConfig from './utils/config.mjs';
 
+await loadConfig()
 
-dotenv.config();
+await connectToDatabase(process.env.MONGO_URI)
 
 const app = express();
 app.use(express.json());
-
-console.log(process.env.MONGO_URI)
-
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('MongoDB connected');
-}).catch((err) => {
-    console.error('MongoDB connection error:', err);
-});
 
 app.use('/api/products', productRoutes);
 

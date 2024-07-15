@@ -2,7 +2,7 @@ import swaggerJSDoc from 'swagger-jsdoc';
 
 const swaggerOptions = {
   definition: {
-    openapi: '3.0.0', // OpenAPI sürümü
+    openapi: '3.0.0',
     info: {
       title: 'Express MongoDB API',
       version: '1.0.0',
@@ -14,7 +14,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['../../routes/*.mjs'], 
+  apis: ['./../routes/*.mjs'], 
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
