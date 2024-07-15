@@ -12,4 +12,22 @@ const logger = winston.createLogger({
     ]
 });
 
+export const logEntry = (req, res, next) => {
+    logger.info(`Entering ${req.method} ${req.path}`, { params: req.body });
+    next();
+  };
+  
+  export const logExit = (req, res, next) => {
+    res.on('finish', () => {
+      logger.info(`Exiting ${req.method} ${req.path}`, { statusCode: res.statusCode });
+    });
+    next();
+  };
+  
+  export const logError = (error, req, res, next) => {
+    logger.error(`Error in ${req.method} ${req.path}: ${error.message}`, { stack: error.stack });
+    next(error); // Pass error to Express error handler
+  };
+
+  
 export default logger
