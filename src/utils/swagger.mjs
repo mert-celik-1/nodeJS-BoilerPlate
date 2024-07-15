@@ -1,12 +1,4 @@
-import app from './app.mjs';
-
-const port = process.env.PORT || 3000;
-
-
-// app.js veya server.js dosyasının başına ekleyin
-
 import swaggerJSDoc from 'swagger-jsdoc';
-import swaggerUI from 'swagger-ui-express'
 
 const swaggerOptions = {
   definition: {
@@ -22,17 +14,9 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./routes/*.mjs'], 
+  apis: ['../../routes/*.mjs'], 
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-
-
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+export default swaggerSpec;
