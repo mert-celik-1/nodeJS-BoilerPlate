@@ -5,12 +5,7 @@ import swaggerSpec from './utils/swagger.mjs';
 const port = process.env.PORT || 3000;
 
 
-
-
-
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-
 
 
 app.listen(port, () => {

@@ -1,5 +1,6 @@
 import express from 'express';
-import Product from '../models/Product.mjs';
+import logger from '../utils/logger.mjs';
+import * as productService from '../services/productService.mjs';
 
 const router = express.Router();
 
@@ -33,8 +34,7 @@ const router = express.Router();
  */
 router.post('/', async (req, res) => {
     try {
-        const product = new Product(req.body);
-        await product.save();
+        const product = await productService.createProduct(req.body);
         res.status(201).json(product);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -53,8 +53,9 @@ router.post('/', async (req, res) => {
  *         description: Sunucu hatası
  */
 router.get('/', async (req, res) => {
+    logger.log('info', 'Hello, Winston!' + Date.now());
     try {
-        const products = await Product.find();
+        const products = await productService.getAllProducts();
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -83,13 +84,14 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
+        const product = await productService.getProductById(req.params.id);
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.status(200).json(product);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
+
 
 /**
  * @swagger
@@ -130,7 +132,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
     try {
-        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const product = await productService.updateProduct(req.params.id, req.body);
         if (!product) return res.status(404).json({ error: 'Product not found' });
         res.status(200).json(product);
     } catch (error) {
@@ -158,10 +160,11 @@ router.put('/:id', async (req, res) => {
  *       '500':
  *         description: Sunucu hatası
  */
+
 router.delete('/:id', async (req, res) => {
     try {
-        const product = await Product.findByIdAndDelete(req.params.id);
-        if (!product) return res.status(404).json({ error: 'Product not found' });
+        const result = await productService.deleteProduct(req.params.id);
+        if (!result) return res.status(404).json({ error: 'Product not found' });
         res.status(200).json({ message: 'Product deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
