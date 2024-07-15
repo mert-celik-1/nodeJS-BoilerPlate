@@ -1,6 +1,6 @@
 import express from 'express';
 import connectToDatabase from './utils/mongo.mjs';
-import productRoutes from '../routes/productRoutes.mjs';
+import productRoutes from './routes/productRoutes.mjs';
 import loadConfig from './utils/config.mjs';
 
 await loadConfig()
