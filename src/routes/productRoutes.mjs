@@ -1,6 +1,9 @@
 import express from 'express';
 import logger from '../utils/logger.mjs';
 import * as productService from '../services/productService.mjs';
+import { addProductValidator } from '../validations/productValidator.mjs';
+import validateModel from '../validations/index.mjs';
+import ErrorResponse from '../helpers/responses/errorResponse.mjs';
 
 const router = express.Router();
 
@@ -32,7 +35,8 @@ const router = express.Router();
  *       '500':
  *         description: Sunucu hatası
  */
-router.post('/', async (req, res) => {
+router.post('/',addProductValidator,validateModel,async (req, res) => {
+
     try {
         const product = await productService.createProduct(req.body);
         res.status(201).json(product);
@@ -52,12 +56,14 @@ router.post('/', async (req, res) => {
  *       '500':
  *         description: Sunucu hatası
  */
-router.get('/', async (req, res) => {
-    logger.log('info', 'Hello, Winston!' + Date.now());
+router.get('/', async (req, res,next) => {
+    throw new ErrorResponse("sıkıntı var")
+
     try {
         const products = await productService.getAllProducts();
         res.status(200).json(products);
     } catch (error) {
+        next(error)
         res.status(500).json({ error: error.message });
     }
 });
