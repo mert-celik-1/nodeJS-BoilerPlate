@@ -11,6 +11,7 @@ await connectToDatabase(process.env.MONGO_URI)
 
 const app = express();
 
+
 app.use(correlationIdMiddleware);
 
 app.use(logEntry);

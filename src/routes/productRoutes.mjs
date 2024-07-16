@@ -1,9 +1,9 @@
-import express from 'express';
-import logger from '../utils/logger.mjs';
-import * as productService from '../services/productService.mjs';
-import { addProductValidator } from '../validations/productValidator.mjs';
-import validateModel from '../validations/index.mjs';
-import ErrorResponse from '../helpers/responses/errorResponse.mjs';
+import express from "express";
+import logger from "../utils/logger.mjs";
+import * as productService from "../services/productService.mjs";
+import { addProductValidator } from "../validations/productValidator.mjs";
+import validateModel from "../validations/index.mjs";
+import redisClient, { redisGet, redisSet } from "../utils/redis.mjs";
 
 const router = express.Router();
 
@@ -35,14 +35,13 @@ const router = express.Router();
  *       '500':
  *         description: Sunucu hatası
  */
-router.post('/',addProductValidator,validateModel,async (req, res) => {
-
-    try {
-        const product = await productService.createProduct(req.body);
-        res.status(201).json(product);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+router.post("/", addProductValidator, validateModel, async (req, res) => {
+  try {
+    const product = await productService.createProduct(req.body);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 /**
@@ -56,16 +55,14 @@ router.post('/',addProductValidator,validateModel,async (req, res) => {
  *       '500':
  *         description: Sunucu hatası
  */
-router.get('/', async (req, res,next) => {
-    throw new ErrorResponse("sıkıntı var")
-
-    try {
-        const products = await productService.getAllProducts();
-        res.status(200).json(products);
-    } catch (error) {
-        next(error)
-        res.status(500).json({ error: error.message });
-    }
+router.get("/", async (req, res, next) => {
+  try {
+    const products = await productService.getAllProducts();
+    res.status(200).json(products);
+  } catch (error) {
+    next(error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -88,16 +85,15 @@ router.get('/', async (req, res,next) => {
  *       '500':
  *         description: Sunucu hatası
  */
-router.get('/:id', async (req, res) => {
-    try {
-        const product = await productService.getProductById(req.params.id);
-        if (!product) return res.status(404).json({ error: 'Product not found' });
-        res.status(200).json(product);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+router.get("/:id", async (req, res) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
-
 
 /**
  * @swagger
@@ -136,14 +132,14 @@ router.get('/:id', async (req, res) => {
  *       '500':
  *         description: Sunucu hatası
  */
-router.put('/:id', async (req, res) => {
-    try {
-        const product = await productService.updateProduct(req.params.id, req.body);
-        if (!product) return res.status(404).json({ error: 'Product not found' });
-        res.status(200).json(product);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
+router.put("/:id", async (req, res) => {
+  try {
+    const product = await productService.updateProduct(req.params.id, req.body);
+    if (!product) return res.status(404).json({ error: "Product not found" });
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 /**
@@ -167,14 +163,14 @@ router.put('/:id', async (req, res) => {
  *         description: Sunucu hatası
  */
 
-router.delete('/:id', async (req, res) => {
-    try {
-        const result = await productService.deleteProduct(req.params.id);
-        if (!result) return res.status(404).json({ error: 'Product not found' });
-        res.status(200).json({ message: 'Product deleted' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+router.delete("/:id", async (req, res) => {
+  try {
+    const result = await productService.deleteProduct(req.params.id);
+    if (!result) return res.status(404).json({ error: "Product not found" });
+    res.status(200).json({ message: "Product deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export default router;
