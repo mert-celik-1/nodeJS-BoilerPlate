@@ -48,7 +48,7 @@ export const redisGet = (key, callback) => {
 export default redisClient;
 
 // Redis istemcisini başlat ve bağlantıyı dinle
-redisClient.connect();
+//redisClient.connect();
 
 // Redis istemcisini dışarıya aktar ve bağlantıyı başlat
 export const redisInit = () => {
