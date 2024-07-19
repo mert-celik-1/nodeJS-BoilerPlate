@@ -10,7 +10,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000', // API URL
+        url: 'http://webapi:3000'//'http://localhost:3000', // API URL
       },
     ],
     components: {
