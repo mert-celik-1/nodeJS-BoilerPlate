@@ -4,17 +4,31 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Express MongoDB API',
+      title: 'API',
       version: '1.0.0',
-      description: 'Express ve MongoDB kullanılarak oluşturulmuş basit bir API',
+      description: 'User management API documentation',
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: 'http://localhost:3000', // API URL
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
       },
     ],
   },
-  apis: ['./routes/*.mjs'], 
+  apis: ['./swagger/*.mjs'], 
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);

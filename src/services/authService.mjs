@@ -1,50 +1,52 @@
 import User from '../models/User.mjs';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 import loadConfig from '../utils/config.mjs';
 
-
-loadConfig()
+loadConfig();
 
 export const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-export const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+export const registerUser = async (userData) => {
+  const { username, email, password } = userData;
   try {
+    // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      throw new Error('User already exists');
     }
 
+    // Create new user
     const user = await User.create({ username, email, password });
 
-    res.status(201).json({
+    return {
       _id: user._id,
       username: user.username,
       email: user.email,
       token: generateToken(user._id),
-    });
+    };
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error(error.message);
   }
 };
 
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+export const loginUser = async (loginData) => {
+  const { email, password } = loginData;
   try {
+    // Find user by email
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {
-      res.json({
+      return {
         _id: user._id,
         username: user.username,
         email: user.email,
         token: generateToken(user._id),
-      });
+      };
     } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+      throw new Error('Invalid email or password');
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error(error.message);
   }
 };

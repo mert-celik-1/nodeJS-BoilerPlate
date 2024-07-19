@@ -1,41 +1,44 @@
-import User from "../models/User.mjs";
+import * as userRepository from '../dal/userRepository.mjs';
 
-export const getUserProfile = async (req, res) => {
+// Get User by ID
+export const getUserById = async (userId) => {
   try {
-    const user = await User.findById(req.user._id);
-    res.json(user);
+    const user = await userRepository.findById(userId);
+    return user;
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error(error.message);
   }
 };
 
-export const updateUserProfile = async (req, res) => {
+// Update User
+export const updateUser = async (userId, userData) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await userRepository.findById(userId);
 
     if (user) {
-      user.username = req.body.username || user.username;
-      user.email = req.body.email || user.email;
+      user.username = userData.username || user.username;
+      user.email = userData.email || user.email;
 
-      if (req.body.password) {
-        user.password = req.body.password;
+      if (userData.password) {
+        user.password = userData.password;
       }
 
-      const updatedUser = await user.save();
-      res.json(updatedUser);
+      const updatedUser = await userRepository.saveUser(user);
+      return updatedUser;
     } else {
-      res.status(404).json({ message: 'User not found' });
+      throw new Error('User not found');
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error(error.message);
   }
 };
 
-export const getAllUsers = async (req, res) => {
+// Get All Users
+export const getAllUsers = async () => {
   try {
-    const users = await User.find({});
-    res.json(users);
+    const users = await userRepository.findAll();
+    return users;
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new Error(error.message);
   }
 };

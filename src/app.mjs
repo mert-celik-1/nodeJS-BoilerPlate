@@ -8,11 +8,14 @@ import loadConfig from './utils/config.mjs';
 import logger, { logEntry, logExit, logError } from './utils/logger.mjs';
 import {errorHandler,promiseException, uncaughtException } from './middlewares/exceptionMiddleware.mjs';
 import correlationIdMiddleware from './middlewares/correlationIdMiddleware.mjs';
+import limiter from './utils/rateLimit.mjs';
 
 await loadConfig()
 await connectToDatabase(process.env.MONGO_URI)
 
 const app = express();
+
+app.use(limiter);
 
 
 app.use(correlationIdMiddleware);
